@@ -54,7 +54,7 @@ function custom_queue_worker($item){
       $myLog['description'] = 'up';
       $myLog['ref_numeric'] = $item->data['nid'];
       $myLog['ref_char'] = 'node';
-      $myLog['info'] = $info_array;
+      $myLog['info'] = $http_request;
       event_log_insert($myLog);
 
       return TRUE;
@@ -70,7 +70,7 @@ function custom_queue_worker($item){
       $myLog['description'] = 'down';
       $myLog['ref_numeric'] = $item->data['nid'];
       $myLog['ref_char'] = 'node';
-      $myLog['info'] = $info_array;
+      $myLog['info'] = $http_request;
       event_log_insert($myLog);
 
   watchdog('custom_queue_worker', 'WORKER');
