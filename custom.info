@@ -4,3 +4,4 @@ package = Squircle
 core = 7.x
 datestamp = "1493591095"
 dependencies[] = ultimate_cron
+dependencies[] = event_log
