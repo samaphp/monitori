@@ -1,0 +1,64 @@
+<?php
+
+
+module_load_include('inc', 'custom', 'custom.cron');
+
+function custom_init(){
+
+  $customQueue = DrupalQueue::get('custom_queue');
+  $data_item = array('test', 'beta', time());
+  //$customQueue->createItem($data_item);
+/*
+  $result = db_query("SELECT nid FROM node WHERE type = :nodeType ", array(':nodeType'=>'website'));
+  $nids = array();
+  foreach ($result as $obj) {  //<-- change 2
+    if( isset($obj->nid) ){
+      $node = node_load($obj->nid);
+      // We might check and validate URL before insert it in queue.
+
+      $customQueue = DrupalQueue::get('custom_queue');
+      $queue_item = array('url'=>$node->title, 'nid'=>$node->nid);
+      $customQueue->createItem($queue_item);
+    }
+  }
+*/
+}
+
+
+/**
+ * Implement hook_mail().
+ */
+function custom_mail($key, &$message, $params) {
+  global $language;
+  $var_lang = $language->language;
+  if( isset($params['uid']) && ($params['uid'] > 0) ){
+    $user2notify = user_load($params['uid']);
+    $var_lang = $user2notify->language;
+  }
+  switch ($key) {
+    case 'site_down':
+      $subject = t('[DOWN] @site');
+      $body = t('Dear, Your site @site is down now.');
+      $message['to'] = $params['to'];
+
+      $strings = array('@site'=>$params['site']);
+      $message['subject'] = strtr($subject, $strings);
+      $message['body'][] = strtr($body, $strings);
+      $message['var_lang'] = $var_lang;
+    break;
+  }
+}
+
+
+
+
+function custom_http_get_info($url){
+
+  //$url = 'https://samaphp.com';
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_exec($ch);
+
+  return curl_getinfo($ch);
+}
